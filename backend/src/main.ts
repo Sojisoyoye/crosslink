@@ -18,6 +18,6 @@ async function bootstrap() {
   });
 
   await app.listen(process.env.APP_PORT || APP_PORT);
-  console.log('Application is running on http://localhost:3001');
+  console.log('Application is running on http://localhost:3001 🚀');
 }
 bootstrap();
