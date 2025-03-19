@@ -1,15 +1,15 @@
 version: '3.8'
 services:
   db:
-    image: postgres:13
+    image: postgres:latest
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: inventory
+      POSTGRES_DB: crosslink
     ports:
-      - '5431:5431'
+      - '5433:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_crosslink:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  postgres_data_crosslink:
