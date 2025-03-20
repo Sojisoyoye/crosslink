@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get } from "@nestjs/common";
+import { AppService } from "./app.service";
 
 @Controller()
 export class AppController {
@@ -10,13 +10,13 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('health')
+  @Get("health")
   getHealth(): string {
-    return 'API is healthy!';
+    return "API is healthy!";
   }
 
-  @Get('version')
+  @Get("version")
   getVersion(): string {
-    return 'v1.0.0';
+    return "v1.0.0";
   }
 }

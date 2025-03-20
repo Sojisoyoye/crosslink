@@ -19,3 +19,12 @@ go to - http://localhost:5173/
 *Swagger Documentation*
 
 Visit http://localhost:3001/api to view the Swagger UI.
+
+**Run migration**
+
+`npm run typeorm:migration:generate -n <FileName>`
+`npm run typeorm:migration:run`
+
+**Seed Data**
+
+`npm run seed`
