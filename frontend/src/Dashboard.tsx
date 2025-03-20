@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Typography, Paper, Grid, Button } from '@mui/material';
+import { Box, Typography, Paper, Button } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { AccountBalance, Payment, People, Notifications } from '@mui/icons-material';
 
 const Dashboard: React.FC = () => {
@@ -11,7 +12,7 @@ const Dashboard: React.FC = () => {
 
       <Grid container spacing={3}>
         {/* Total Users Card */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid>
           <Paper sx={{ p: 2, textAlign: 'center' }}>
             <People fontSize="large" />
             <Typography variant="h6">Total Users</Typography>
@@ -20,7 +21,7 @@ const Dashboard: React.FC = () => {
         </Grid>
 
         {/* Total Transactions Card */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid>
           <Paper sx={{ p: 2, textAlign: 'center' }}>
             <Payment fontSize="large" />
             <Typography variant="h6">Total Transactions</Typography>
@@ -29,7 +30,7 @@ const Dashboard: React.FC = () => {
         </Grid>
 
         {/* Total Revenue Card */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid>
           <Paper sx={{ p: 2, textAlign: 'center' }}>
             <AccountBalance fontSize="large" />
             <Typography variant="h6">Total Revenue</Typography>
@@ -38,7 +39,7 @@ const Dashboard: React.FC = () => {
         </Grid>
 
         {/* Notifications Card */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid>
           <Paper sx={{ p: 2, textAlign: 'center' }}>
             <Notifications fontSize="large" />
             <Typography variant="h6">Notifications</Typography>

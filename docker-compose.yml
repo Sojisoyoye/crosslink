@@ -1,5 +1,32 @@
 version: '3.8'
 services:
+  backend:
+    container_name: crosslink-backend
+    build:
+      context: ./backend
+      target: development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - db
+
+  frontend:
+    container_name: crosslink-frontend
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
   db:
     image: postgres:latest
     environment:
