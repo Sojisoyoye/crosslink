@@ -34,7 +34,8 @@ Visit http://localhost:3001/api to view the Swagger UI.
 
 *Example Request:*
 
-```{
+```
+{
   "name": "John Doe",
   "email": "john.doe@example.com",
   "password": "securePassword123"
@@ -53,3 +54,12 @@ Visit http://localhost:3001/api to view the Swagger UI.
   "updatedAt": "2023-10-01T12:00:00.000Z"
 }
 ```
+
+*Run Unit Tests*
+
+`npm run test`
+
+*Run E2E Tests*
+
+`npm run test:e2e`
+

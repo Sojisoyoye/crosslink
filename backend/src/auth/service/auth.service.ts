@@ -2,10 +2,10 @@ import { Injectable, ConflictException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
-import { RegisterUserDto } from "./dto/register-user.dto";
+import { RegisterUserDto } from "../dto/register-user.dto";
 import { v4 as uuidv4 } from "uuid";
-import { EmailService } from "../email/email.service";
-import { User } from "../users/users.entity";
+import { EmailService } from "../../email/email.service";
+import { User } from "../../users/users.entity";
 
 @Injectable()
 export class AuthService {

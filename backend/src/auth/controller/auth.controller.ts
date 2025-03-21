@@ -7,8 +7,6 @@ import {
   Get,
   Query,
 } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { RegisterUserDto } from "./dto/register-user.dto";
 import {
   ApiTags,
   ApiOperation,
@@ -17,6 +15,8 @@ import {
   ApiQuery,
 } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
+import { AuthService } from "../service/auth.service";
+import { RegisterUserDto } from "../dto/register-user.dto";
 
 @ApiTags("Auth")
 @Controller("api/auth")
