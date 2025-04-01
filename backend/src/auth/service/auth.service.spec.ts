@@ -3,7 +3,6 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { AuthService } from "./auth.service";
 import * as bcrypt from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
 import { User } from "../../users/users.entity";
 import { EmailService } from "../../email/email.service";
 import { RegisterUserDto } from "../dto/register-user.dto";
@@ -44,7 +43,6 @@ describe("AuthService", () => {
       };
 
       const hashedPassword = await bcrypt.hash(registerUserDto.password, 10);
-      const verificationToken = uuidv4();
       const userDto = {
         id: "1",
         ...registerUserDto,
@@ -52,13 +50,6 @@ describe("AuthService", () => {
         isVerified: false,
         verificationToken: "token",
       };
-
-      //   const user = this.userRepository.create({
-      //     name,
-      //     email,
-      //     password: hashedPassword,
-      //     verificationToken,
-      //   });
 
       const user = new User();
       user.id = userDto.id;
