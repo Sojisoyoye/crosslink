@@ -109,3 +109,25 @@ dist
 
 .idea
 .DS_Store
+.vscode
+.cursor
+.roo
+.windsurfrules
+.roomodes
+
+
+# Added by Claude Task Master
+dev-debug.log
+# Environment variables
+# Editor directories and files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+# Task files
+tasks.json
+tasks/
+
+.taskmaster

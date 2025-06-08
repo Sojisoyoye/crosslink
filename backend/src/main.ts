@@ -3,8 +3,10 @@ import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { LoggingMiddleware } from "./logging.middleware";
+import * as dotenv from "dotenv";
 
-const APP_PORT = 3001;
+dotenv.config();
+const APP_PORT = process.env.APP_PORT || 3000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,9 +14,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.use(new LoggingMiddleware().use);
 
-  // Enable CORS for frontend communication
   app.enableCors({
-    origin: "http://localhost:3000", // frontend URL
+    origin: "http://localhost:3001",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   });
@@ -30,7 +31,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
 
-  await app.listen(process.env.APP_PORT || APP_PORT);
-  console.log("Application is running on http://localhost:3001 🚀");
+  await app.listen(APP_PORT);
+  console.log(`Application is running on http://localhost:${APP_PORT} 🚀`);
 }
 bootstrap();

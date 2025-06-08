@@ -1,0 +1,61 @@
+name: Backend Deployment
+
+on:
+  push:
+    branches:
+      - main # deploys to production
+      - sandbox # deploys to sandbox
+      - acceptance # deploys to acceptance
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-deploy.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+      - name: Install dependencies
+        run: cd backend && npm ci
+      - name: Run tests
+        run: cd backend && npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set environment name
+        id: env_name
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "env_name=production" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
+            echo "env_name=sandbox" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/acceptance" ]]; then
+            echo "env_name=acceptance" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy to Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          ENVIRONMENT: ${{ steps.env_name.outputs.env_name }}
+        run: |
+          # Get the service ID for the current environment
+          SERVICE_ID_VAR="RENDER_SERVICE_ID_${ENVIRONMENT^^}"
+          SERVICE_ID="${!SERVICE_ID_VAR}"
+
+          # Trigger deployment
+          curl -X POST \
+            https://api.render.com/v1/deploys \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"serviceId": "'$SERVICE_ID'"}'
+
+          echo "Deployment to $ENVIRONMENT environment triggered"

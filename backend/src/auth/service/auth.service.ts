@@ -1,11 +1,18 @@
-import { Injectable, ConflictException, Logger } from "@nestjs/common";
+import {
+  Injectable,
+  ConflictException,
+  Logger,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { RegisterUserDto } from "../dto/register-user.dto";
+import { LoginDto } from "../dto/login.dto";
 import { v4 as uuidv4 } from "uuid";
 import { EmailService } from "../../email/email.service";
 import { User } from "../../users/users.entity";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
@@ -14,7 +21,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
+    private readonly jwtService: JwtService
   ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<User> {
@@ -64,5 +72,44 @@ export class AuthService {
     await this.userRepository.save(user);
 
     this.logger.log(`Email verified for user: ${user.email}`);
+  }
+
+  async login(
+    loginDto: LoginDto
+  ): Promise<{ user: User; accessToken: string }> {
+    const { email, password } = loginDto;
+
+    this.logger.log(`Attempting login for user: ${email}`);
+
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      this.logger.warn(`User not found: ${email}`);
+      throw new UnauthorizedException("Invalid credentials");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      this.logger.warn(`Invalid password for user: ${email}`);
+      throw new UnauthorizedException("Invalid credentials");
+    }
+
+    if (!user.isVerified) {
+      this.logger.warn(`Unverified user attempting to login: ${email}`);
+      throw new UnauthorizedException("Please verify your email first");
+    }
+
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = this.jwtService.sign(payload);
+
+    this.logger.log(`User logged in successfully: ${email}`);
+
+    return {
+      user,
+      accessToken,
+    };
   }
 }

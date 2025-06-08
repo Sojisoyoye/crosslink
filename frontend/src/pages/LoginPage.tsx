@@ -1,16 +1,19 @@
 import React from "react";
-import SignUpForm from "../components/SignUpForm";
+import LoginForm from "../components/LoginForm";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-const SignUpPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow py-16 bg-gray-50">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Sign Up</h1>
-          <SignUpForm />
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">Login</h1>
+          <p className="text-gray-600 mb-8">
+            Welcome back! Log in to your Crosslink account.
+          </p>
+          <LoginForm />
         </div>
       </main>
       <Footer />
@@ -18,4 +21,4 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-export default SignUpPage;
+export default LoginPage;

@@ -1,13 +1,13 @@
-FROM node:18-alpine AS development
+FROM node:20-alpine AS development
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
 EXPOSE 3001
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3001"]
 
 # Production build stage
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --only=production
