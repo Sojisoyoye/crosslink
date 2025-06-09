@@ -1,38 +1,104 @@
-# crosslink
+# CrossLink
 
-**To run the app**
+## Running the Application
 
-- run:
+### Using Docker (Recommended)
 
-`docker-compose up`
+Start the entire stack (frontend, backend, and database):
 
-- For backend, cd into backend folder and run:
+```bash
+docker-compose up
+```
 
-`npm run start:dev`
+To run in detached mode:
 
-- For frontend, cd into frontend folder and run:
+```bash
+docker-compose up -d
+```
 
-`npm run dev`
+Start individual services:
 
-go to - http://localhost:5173/
+```bash
+# Start only the backend
+docker-compose up backend
 
-*Swagger Documentation*
+# Start only the frontend
+docker-compose up frontend
+
+# Start only the database
+docker-compose up db
+```
+
+### Without Docker (Alternative)
+
+- For backend:
+
+```bash
+cd backend
+npm install
+npm run start:dev
+```
+
+- For frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Accessing the application
+
+- Frontend: http://localhost:3001 (Docker) or http://localhost:5173 (local)
+- Backend API: http://localhost:3000
+- Database: PostgreSQL running on port 5433
+
+_Swagger Documentation_
 
 Visit http://localhost:3001/api to view the Swagger UI.
 
-**Run migration**
+## Database Operations
 
-- `npm run typeorm:migration:generate -n <FileName>`
-- `npm run typeorm:migration:run`
+### Using Docker
 
-**Seed Data**
+**Running database migrations**:
 
-`npm run seed`
+```bash
+docker-compose exec backend npm run typeorm:migration:run
+```
 
+**Generating migrations**:
 
-## /auth/register 
+```bash
+docker-compose exec backend npm run typeorm:migration:generate -n <FileName>
+```
 
-*Example Request:*
+**Seeding the database**:
+
+```bash
+docker-compose exec backend npm run seed
+```
+
+### Without Docker
+
+**Run migration**:
+
+```bash
+cd backend
+npm run typeorm:migration:generate -n <FileName>
+npm run typeorm:migration:run
+```
+
+**Seed Data**:
+
+```bash
+cd backend
+npm run seed
+```
+
+## /auth/register
+
+_Example Request:_
 
 ```
 {
@@ -41,7 +107,8 @@ Visit http://localhost:3001/api to view the Swagger UI.
   "password": "securePassword123"
 }
 ```
-*Example response:*
+
+_Example response:_
 
 ```
 {
@@ -55,11 +122,97 @@ Visit http://localhost:3001/api to view the Swagger UI.
 }
 ```
 
-*Run Unit Tests*
+## Running Tests
 
-`npm run test`
+### Using Docker
 
-*Run E2E Tests*
+**Using the script provided**:
 
-`npm run test:e2e`
+```bash
+./scripts/run-backend-tests.sh
+```
 
+**Inside the Docker container**:
+
+```bash
+docker-compose exec backend npm test
+```
+
+**For test coverage**:
+
+```bash
+docker-compose exec backend npm run test:cov
+```
+
+**For debugging tests**:
+
+```bash
+docker-compose exec backend npm run test:debug
+```
+
+**Running specific test files**:
+
+```bash
+# Run a specific test file
+docker-compose exec backend npx jest path/to/test-file.spec.ts
+
+# Run tests with a specific pattern in their names
+docker-compose exec backend npx jest -t "test pattern"
+```
+
+**Running End-to-End Tests**:
+
+```bash
+docker-compose exec backend npx jest --config jest-e2e.config.js
+```
+
+### Without Docker
+
+**Run Unit Tests**:
+
+```bash
+cd backend
+npm run test
+```
+
+**Run E2E Tests**:
+
+```bash
+cd backend
+npm run test:e2e
+```
+
+## Additional Docker Commands
+
+**Rebuilding containers after changes**:
+
+```bash
+docker-compose build backend
+docker-compose build frontend
+```
+
+**Viewing logs**:
+
+```bash
+# View logs for all containers
+docker-compose logs
+
+# View logs for a specific container
+docker-compose logs backend
+docker-compose logs frontend
+
+# Follow logs in real-time
+docker-compose logs -f
+```
+
+**Stopping the application**:
+
+```bash
+docker-compose down
+```
+
+**Stopping and removing volumes (will delete database data)**:
+
+```bash
+docker-compose down -v
+```

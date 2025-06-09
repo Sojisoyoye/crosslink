@@ -1,46 +1,27 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useSignUp } from "../hooks/useSignUp";
+import { useLogin } from "../hooks/useLogin";
+import { Link } from "react-router-dom";
 
 type FormValues = {
-  name: string;
   email: string;
   password: string;
 };
 
-const SignUpForm: React.FC = () => {
+const LoginForm: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
-  const { signUpUser, isLoading } = useSignUp();
+  const { loginUser, isLoading } = useLogin();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    signUpUser.mutate(data);
+    loginUser.mutate(data);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
-      <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Name
-        </label>
-        <input
-          id="name"
-          type="text"
-          className={`mt-1 block w-full rounded-md border shadow-sm focus:border-primary-main focus:ring focus:ring-primary-light focus:ring-opacity-50 ${
-            errors.name ? "border-red-500" : "border-gray-300"
-          }`}
-          {...register("name", { required: "Name is required" })}
-        />
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-        )}
-      </div>
       <div>
         <label
           htmlFor="email"
@@ -88,15 +69,56 @@ const SignUpForm: React.FC = () => {
           <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
         )}
       </div>
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary-main hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light disabled:opacity-50"
-      >
-        {isLoading ? "Signing Up..." : "Sign Up"}
-      </button>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <input
+            id="remember-me"
+            name="remember-me"
+            type="checkbox"
+            className="h-4 w-4 text-primary-main focus:ring-primary-light border-gray-300 rounded"
+          />
+          <label
+            htmlFor="remember-me"
+            className="ml-2 block text-sm text-gray-700"
+          >
+            Remember me
+          </label>
+        </div>
+
+        <div className="text-sm">
+          <Link
+            to="/forgot-password"
+            className="font-medium text-primary-main hover:text-primary-dark"
+          >
+            Forgot your password?
+          </Link>
+        </div>
+      </div>
+
+      <div>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary-main hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light disabled:opacity-50"
+        >
+          {isLoading ? "Logging in..." : "Login"}
+        </button>
+      </div>
+
+      <div className="text-center mt-4">
+        <p className="text-sm text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="font-medium text-primary-main hover:text-primary-dark"
+          >
+            Sign up
+          </Link>
+        </p>
+      </div>
     </form>
   );
 };
 
-export default SignUpForm;
+export default LoginForm;

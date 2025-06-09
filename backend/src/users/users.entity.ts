@@ -27,10 +27,10 @@ export class User {
   isVerified!: boolean;
 
   @Column({ nullable: true })
-  verificationToken!: string; // For email verification
+  verificationToken!: string;
 
   @Column({ nullable: true })
-  passwordResetToken!: string; // For password resets
+  passwordResetToken!: string;
 
   @OneToMany(() => Offer, (offer) => offer.user)
   offers!: Offer[];

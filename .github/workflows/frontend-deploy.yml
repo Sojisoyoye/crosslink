@@ -1,0 +1,68 @@
+name: Frontend Deployment
+
+on:
+  push:
+    branches:
+      - main # deploys to production
+      - sandbox # deploys to sandbox
+      - acceptance # deploys to acceptance
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-deploy.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        run: cd frontend && npm ci
+      - name: Run tests
+        run: cd frontend && npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set environment name
+        id: env_name
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "env_name=production" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
+            echo "env_name=sandbox" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/acceptance" ]]; then
+            echo "env_name=acceptance" >> $GITHUB_OUTPUT
+          fi
+
+      # Install Vercel CLI
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      # Deploy to Vercel
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          ENVIRONMENT: ${{ steps.env_name.outputs.env_name }}
+        run: |
+          if [[ "$ENVIRONMENT" == "production" ]]; then
+            # Production deployment
+            vercel deploy --prod --token=$VERCEL_TOKEN --cwd frontend
+          else
+            # Preview deployment for acceptance/sandbox
+            vercel deploy --token=$VERCEL_TOKEN --cwd frontend \
+              --env VITE_APP_ENV=$ENVIRONMENT \
+              --scope $VERCEL_ORG_ID \
+              --name crosslink-$ENVIRONMENT
+          fi
+
+          echo "Deployment to $ENVIRONMENT environment completed"
